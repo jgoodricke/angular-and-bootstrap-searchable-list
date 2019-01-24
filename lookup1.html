@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Lookup Web App</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+	<link href="css/bootstrap.min.css" rel="stylesheet" />
+
+	<style>
+		.disabled { cursor: not-allowed; }
+	</style>
+
+	<script src="js/angular.min.js"></script>
+	<script src="lookup-app.js"></script>
+</head>
+
+<body ng-app="myApp"  ng-controller="myCtrl">
+	<!--It accepts 2 text input filters, namely: unit code and unit description.-->
+	<label for="codeIn">unit code: </label><input ng-model="searchCode" type="text" name="codeIn">
+	<br/>
+	<label for="descIn">unit description: </label>
+	<input ng-model="searchDesc" type="text" name="descIn">
+
+	<!--It has a radio input filter to select unit type, namely: core, software development, systems analysis and all.-->
+	<p>
+		Core <input type="radio" name="unitType" value="Core" ng-model="searchType">
+		Software Development <input type="radio" name="unitType" value="Software Development" ng-model="searchType">
+		Systems Analysis <input type="radio" name="unitType" value="Systems Analysis" ng-model="searchType">
+		All <input type="radio" name="unitType" value="" checked="checked" ng-model="searchType">
+	</p>
+	<!--Display the unit information in a table-->
+	<div class="table-responsive" ng-if="dataLoaded">
+			<table class="table table-striped table-hover">
+				<caption>List of Units</caption>
+				<tr>
+					<th id="codes" scope="col">Code</th>
+					<th id="descs" scope="col">Description</th>
+					<th id="cps" scope="col">CP</th>
+					<th id="types" scope="col">Type</th>
+				</tr>
+				<tr data-ng-repeat="unit in filteredUnits | offset: currentPage*unitsPerPage | limitTo: unitsPerPage | orderBy : 'desc'">
+					<td headers="codes">{{ unit.code }}</td>
+					<td headers="descs">{{ unit.desc }}</td>
+					<td headers="cps">{{ unit.cp | number: 2 }}</td>
+					<td headers="types">{{ unit.type }}</td>
+				</tr>
+				<!--Pagenation Footer-->
+				<tfoot>
+					<tr>
+						<td colspan="4">
+							<ul class="pagination">
+								<li data-ng-if="!prevPageDisabled()" data-ng-click="prevPage()">
+									<a href="#">Prev</a>
+								</li>
+								<li data-ng-repeat="n in range()" data-ng-class="{active: n == currentPage}" data-ng-click="setPage(n)">
+									<a href="#">{{n+1}}</a>
+								</li>
+								<li data-ng-if="!nextPageDisabled()" data-ng-click="nextPage()">
+									<a href="#">Next</a>
+								</li>
+							</ul>
+						</td>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+</body>
+</html>
